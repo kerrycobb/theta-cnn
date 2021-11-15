@@ -108,6 +108,7 @@ def cnn(model, predictors, response, outname):
     pickle.dump(output, open(f"{outname}.p", "wb"))
 
 def run_cnns(input, reduced_size):
+    # TODO: Write description of these inputs, what does reduced size do?
     data = np.load(input, allow_pickle=True)
     
     popSizes = data["popSizes"]

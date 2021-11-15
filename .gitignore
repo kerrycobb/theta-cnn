@@ -1,4 +1,6 @@
 *.npz
 *.p
 *.png
-/trash
+slurm*
+# /trash
+

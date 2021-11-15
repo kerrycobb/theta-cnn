@@ -11,8 +11,8 @@ def simulate(configFile):
     config = yaml.load(open(configFile, "r"), Loader=yaml.FullLoader) 
     seed = config["seed"] 
     nDataSets = config["nDataSets"] 
-    nSamples = config["nSamples"] 
-    seqLength = config["seqLength"] 
+    nSamples = config["nSamples"]
+    seqLength = int(float(config["seqLength"]))
     recombRate = float(config["recombRate"])
     mutRate = float(config["mutRate"]) 
     lowerSize = float(config["lowerSize"])
