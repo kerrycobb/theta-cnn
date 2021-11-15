@@ -7,7 +7,7 @@ import fire
 import yaml
 import os.path as p
 
-def simulate(configFile):
+def simulate(configFile, outdir):
     config = yaml.load(open(configFile, "r"), Loader=yaml.FullLoader) 
     seed = config["seed"] 
     nDataSets = config["nDataSets"] 
@@ -52,7 +52,8 @@ def simulate(configFile):
         varChars=varCharMatrices,
         invarChars=invarCharMatrices)
     outfile = f"{p.splitext(p.basename(configFile))[0]}.npz"
-    np.savez_compressed(outfile, **data)
+    outpath = p.join(outdir, outfile)
+    np.savez_compressed(outpath, **data)
     print("Simulation complete")
 
 if __name__ == "__main__":
