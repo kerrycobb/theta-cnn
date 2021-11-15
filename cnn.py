@@ -133,7 +133,8 @@ def run_cnns(input, reduced_size, outdir):
     # Find index for the last variable character and it's position which falls 
     # within the reduced dataset
     for i in range(positions.shape[0]):
-        ixs = np.searchsorted(positions[i], reduced_size) - 1
+        # Find index where reduced_size should be inserted to maintain order.
+        ixs = np.searchsorted(positions[i], reduced_size, side="right") - 1
         redPositions[i] = positions[i][:ixs] 
         redVarChars[i] = varChars[i][:ixs] 
 
