@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import fire
+import os.path as p
 import bisect
 import numpy as np
 import pickle 
@@ -67,7 +68,7 @@ def split_list(data, train, test):
     return training_list, validation_list, testing_list
 
 @profile
-def cnn(model, predictors, response, outname):
+def cnn(model, predictors, response, outname, outdir):
     print("*" * 80 + "\n" + outname + "\n" + "*" * 80)
 
     # Split data into training, validation, and testing
@@ -105,28 +106,36 @@ def cnn(model, predictors, response, outname):
        predicted=pred,
        simulated=test_resp,
        times=time_callback.times)
-    pickle.dump(output, open(f"{outname}.p", "wb"))
+    outfile = f"{outname}.p"
+    outpath = p.join(outdir, outfile) 
+    pickle.dump(output, open(outpath, "wb"))
 
-def run_cnns(input, reduced_size):
-    # TODO: Write description of these inputs, what does reduced size do?
+def run_cnns(input, reduced_size, outdir):
+    """
+    input: .npz file output from sim.py
+    reduced_size: size of reduced dataset 
+    """
     data = np.load(input, allow_pickle=True)
-    
+
+    # Read data matrices from data file 
     popSizes = data["popSizes"]
     positions = data["positions"]
     varChars = data["varChars"]
     invarChars = data["invarChars"]
 
-    # Reduced data sets to reduced_size
+    # Create reduced size datasets with all chars 
     redInvarChars = invarChars[:, :reduced_size]
+    # Create empty arrays to hold reduced positions arrays and reduced variable 
+    # char matrices
     redPositions = np.empty(positions.shape[0], dtype=object)
     redVarChars = np.empty(varChars.shape[0], dtype=object)
-    
+
+    # Find index for the last variable character and it's position which falls 
+    # within the reduced dataset
     for i in range(positions.shape[0]):
-        pos = positions[i]
-        var = varChars[i] 
-        ix = np.searchsorted(pos, reduced_size) - 1
-        redPositions[i] = pos[:ix] 
-        redVarChars[i] = var[:ix] 
+        ixs = np.searchsorted(positions[i], reduced_size) - 1
+        redPositions[i] = positions[i][:ixs] 
+        redVarChars[i] = varChars[i][:ixs] 
 
     # Pad ragged arrays and matrices
     positions = cnn_utils.padArrays(positions, value=-1)
@@ -134,7 +143,7 @@ def run_cnns(input, reduced_size):
     redPositions = cnn_utils.padArrays(positions, value=-1)
     redVarChars = cnn_utils.padMatrices(redVarChars)
 
-    # Create inputs
+    # Create CNN inputs
     posInput = Input(shape=positions.shape[1:])
     redPosInput = Input(shape=redPositions.shape[1:])
     invarInput = Input(shape=invarChars.shape[1:])
@@ -167,12 +176,12 @@ def run_cnns(input, reduced_size):
     invar_model = Model(inputs=[invarInput], outputs=[invar_network]) 
 
     # Run CNN training and testing
-    # cnn(var_model, [varChars], popSizes, "var-model")
-    # cnn(pos_var_model, [positions, varChars], popSizes, "pos-var-model")
+    cnn(var_model, [varChars], popSizes, "var-model")
+    cnn(pos_var_model, [positions, varChars], popSizes, "pos-var-model")
     # cnn(red_var_model, [redVarChars], popSizes, "red-var-model")
     # cnn(red_pos_var_model, [redPositions, redVarChars], popSizes, "red-pos-var-model")
     # cnn(red_invar_model, [redInvarChars], popSizes, "red-invar-model")
-    cnn(invar_model, [invarChars], popSizes, "invar-model")
+    # cnn(invar_model, [invarChars], popSizes, "invar-model", outdir)
 
 if __name__ == "__main__":
     fire.Fire(run_cnns)
