@@ -24,7 +24,7 @@ def simulate(configFile, outdir):
     invarCharMatrices = np.zeros((nDataSets, seqLength, nSamples * 2), dtype=np.uint8)
     
     for rep in range(nDataSets):
-        print(f"Simulating dataset {rep}")
+        print(f"Simulating dataset {rep}", flush=True)
         popSize = np.random.randint(lowerSize, upperSize)
         popSizeArray[rep] = popSize 
         ts = msprime.sim_ancestry(samples=nSamples, recombination_rate=recombRate, 
