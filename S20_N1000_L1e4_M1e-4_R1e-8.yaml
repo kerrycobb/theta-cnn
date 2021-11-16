@@ -1,0 +1,8 @@
+seed: 12345
+nSamples: 20
+nDataSets: 1000
+seqLength: 1e4 
+recombRate: 1e-8 
+mutRate: 1e-4 
+lowerSize: 1e4
+upperSize: 1e5 
