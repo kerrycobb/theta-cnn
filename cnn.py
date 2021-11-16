@@ -110,7 +110,8 @@ def cnn(model, predictors, response, outname, outdir):
     outpath = p.join(outdir, outfile) 
     pickle.dump(output, open(outpath, "wb"))
 
-def run_cnns(input, reduced_size, outdir):
+# def run_cnns(input, reduced_size, outdir):
+def run_cnns(input, outdir):
     """
     input: .npz file output from sim.py
     reduced_size: size of reduced dataset 
@@ -123,26 +124,26 @@ def run_cnns(input, reduced_size, outdir):
     varChars = data["varChars"]
     invarChars = data["invarChars"]
 
-    # Create reduced size datasets with all chars 
-    redInvarChars = invarChars[:, :reduced_size]
-    # Create empty arrays to hold reduced positions arrays and reduced variable 
-    # char matrices
-    redPositions = np.empty(positions.shape[0], dtype=object)
-    redVarChars = np.empty(varChars.shape[0], dtype=object)
+    # # Create reduced size datasets with all chars 
+    # redInvarChars = invarChars[:, :reduced_size]
+    # # Create empty arrays to hold reduced positions arrays and reduced variable 
+    # # char matrices
+    # redPositions = np.empty(positions.shape[0], dtype=object)
+    # redVarChars = np.empty(varChars.shape[0], dtype=object)
 
-    # Find index for the last variable character and it's position which falls 
-    # within the reduced dataset
-    for i in range(positions.shape[0]):
-        # Find index where reduced_size should be inserted to maintain order.
-        ixs = np.searchsorted(positions[i], reduced_size, side="right") - 1
-        redPositions[i] = positions[i][:ixs] 
-        redVarChars[i] = varChars[i][:ixs] 
+    # # Find index for the last variable character and it's position which falls 
+    # # within the reduced dataset
+    # for i in range(positions.shape[0]):
+    #     # Find index where reduced_size should be inserted to maintain order.
+    #     ixs = np.searchsorted(positions[i], reduced_size, side="right") - 1
+    #     redPositions[i] = positions[i][:ixs] 
+    #     redVarChars[i] = varChars[i][:ixs] 
 
     # Pad ragged arrays and matrices
     positions = cnn_utils.padArrays(positions, value=-1)
     varChars = cnn_utils.padMatrices(varChars)
-    redPositions = cnn_utils.padArrays(positions, value=-1)
-    redVarChars = cnn_utils.padMatrices(redVarChars)
+    # redPositions = cnn_utils.padArrays(positions, value=-1)
+    # redVarChars = cnn_utils.padMatrices(redVarChars)
 
     # Create CNN inputs
     posInput = Input(shape=positions.shape[1:])
