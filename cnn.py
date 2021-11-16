@@ -146,34 +146,34 @@ def run_cnns(input, reduced_size, outdir):
 
     # Create CNN inputs
     posInput = Input(shape=positions.shape[1:])
-    redPosInput = Input(shape=redPositions.shape[1:])
+    # redPosInput = Input(shape=redPositions.shape[1:])
     invarInput = Input(shape=invarChars.shape[1:])
     varInput = Input(shape=varChars.shape[1:])
-    redVarInput = Input(shape=redVarChars.shape[1:])
-    redInvarInput = Input(shape=redInvarChars.shape[1:])
+    # redVarInput = Input(shape=redVarChars.shape[1:])
+    # redInvarInput = Input(shape=redInvarChars.shape[1:])
 
     # Create alignment and position branches  
     posBranch = positionsBranch(posInput) 
-    redPosBranch = positionsBranch(redPosInput) 
+    # redPosBranch = positionsBranch(redPosInput) 
     varBranch = alignBranch(varInput)
-    redVarBranch = alignBranch(redVarInput)
+    # redVarBranch = alignBranch(redVarInput)
     invarBranch = alignBranch(invarInput)
-    redInvarBranch = alignBranch(redInvarInput)
+    # redInvarBranch = alignBranch(redInvarInput)
 
     # Create output branches, concatenating if necessary
     pos_var_network = outputBranch(concatenate([posBranch, varBranch]))  
     var_network = outputBranch(varBranch)
-    red_pos_var_network = outputBranch(concatenate([redPosBranch, redVarBranch]))  
-    red_var_network = outputBranch(redVarBranch)
+    # red_pos_var_network = outputBranch(concatenate([redPosBranch, redVarBranch]))  
+    # red_var_network = outputBranch(redVarBranch)
     invar_network = outputBranch(invarBranch)
-    red_invar_network = outputBranch(redInvarBranch)
+    # red_invar_network = outputBranch(redInvarBranch)
 
     # Construct models 
     pos_var_model = Model(inputs=[posInput, varInput], outputs=[pos_var_network]) 
     var_model = Model(inputs=[varInput], outputs=[var_network]) 
-    red_pos_var_model = Model(inputs=[redPosInput, redVarInput], outputs=[red_pos_var_network]) 
-    red_var_model = Model(inputs=[redVarInput], outputs=[red_var_network]) 
-    red_invar_model = Model(inputs=[redInvarInput], outputs=[red_invar_network]) 
+    # red_pos_var_model = Model(inputs=[redPosInput, redVarInput], outputs=[red_pos_var_network]) 
+    # red_var_model = Model(inputs=[redVarInput], outputs=[red_var_network]) 
+    # red_invar_model = Model(inputs=[redInvarInput], outputs=[red_invar_network]) 
     invar_model = Model(inputs=[invarInput], outputs=[invar_network]) 
 
     # Run CNN training and testing
