@@ -86,7 +86,22 @@ def cnn(model, predictors, response, outname, outdir):
     # logs = f"logs/{outname}" #+ datetime.now().strftime("%Y%m%d-%H%M%S")
     # tb_callback = tf.keras.callbacks.TensorBoard(log_dir=logs,
                                                 #  profile_batch = '10,15')
-    model.compile(loss='mean_squared_error', optimizer='adam', metrics=[rmse])
+
+    #TODO: Try SGD
+    # Something like
+    # epochs=60
+    # learning_rate = 0.1
+    # decay_rate = learning_rate / epochs
+    # momentum = 0.8
+    # sgd = SGD(lr=learning_rate, momentum=momentum, decay=decay_rate, nesterov=False)
+
+
+    model.compile(
+        loss='mean_squared_error', 
+        optimizer='adam', 
+        # TODO: Try SGD
+        # optimizer=sgd, 
+        metrics=[rmse])
     time_callback = TimeHistory()
     history = model.fit(train_pred, train_resp, 
         validation_data=(val_pred, val_resp),
